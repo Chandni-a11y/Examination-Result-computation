@@ -117,10 +117,15 @@ def init_db():
                                    ("status", "TEXT NOT NULL DEFAULT 'Scheduled'")):
             if column not in exam_columns:
                 db.execute(f"ALTER TABLE exams ADD COLUMN {column} {definition}")
+        admin_username = os.environ.get("EXAM_ADMIN_USERNAME", "admin")
+        admin_password_hash = generate_password_hash(
+            os.environ.get("EXAM_ADMIN_PASSWORD", "admin123")
+        )
         db.execute(
-            "INSERT OR IGNORE INTO users(username,password_hash,role) VALUES(?,?,?)",
-            (os.environ.get("EXAM_ADMIN_USERNAME", "admin"),
-             generate_password_hash(os.environ.get("EXAM_ADMIN_PASSWORD", "admin123")), "admin"),
+            """INSERT INTO users(username,password_hash,role) VALUES(?,?,?)
+            ON CONFLICT(username) DO UPDATE SET password_hash=excluded.password_hash
+            WHERE users.role='admin'""",
+            (admin_username, admin_password_hash, "admin"),
         )
 
 
