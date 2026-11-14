@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: campus-exam-desk
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: EXAM_DEPLOYMENT_MODE
+        value: public
+      - key: EXAM_APP_SECRET
+        generateValue: true
+      - key: EXAM_ADMIN_USERNAME
+        value: collegeadmin
+      - key: EXAM_ADMIN_PASSWORD
+        sync: false

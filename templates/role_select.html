@@ -1,0 +1,24 @@
+{% extends 'base.html' %}{% block title %}Choose a portal · Campus Exam Desk{% endblock %}
+{% block content %}
+<section class="welcome">
+  <p class="eyebrow">COLLEGE EXAMINATION &amp; RESULTS</p>
+  <h1>Welcome to the examination portal</h1>
+  <p class="intro">Choose your role to continue to the correct sign-in page.</p>
+</section>
+<section class="portal-grid" aria-label="Choose your portal">
+  {% set portals = [
+    ('student', 'Student', 'View published results and submit a correction request.', 'S'),
+    ('faculty', 'Faculty', 'Enter marks for students and submit them for review.', 'F'),
+    ('exam_branch', 'Examination Branch', 'Schedule exams, verify marks, publish results, and process requests.', 'E'),
+    ('admin', 'Administrator', 'Manage student and subject records, portal accounts, and system issues.', 'A')
+  ] %}
+  {% for role, title, description, mark in portals %}
+  <a class="portal-card" href="{{ url_for('login', role=role) }}">
+    <span class="portal-icon icon-{{ role }}" aria-hidden="true">{{ mark }}</span>
+    <span class="portal-copy"><strong>{{ title }}</strong><span>{{ description }}</span></span>
+    <span class="portal-arrow" aria-hidden="true">Continue →</span>
+  </a>
+  {% endfor %}
+</section>
+<p class="welcome-note">Each portal uses a separate role account created by the administrator.</p>
+{% endblock %}

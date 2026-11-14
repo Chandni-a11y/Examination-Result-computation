@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}College Examination System{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('dashboard') if session.get('user_id') else url_for('home') }}">Campus Exam Desk</a>
+    {% if session.get('user_id') %}<div class="account">{{ session.username }} · {{ session.role|replace('_',' ')|title }} <a href="{{ url_for('logout') }}">Log out</a></div>{% endif %}
+  </header>
+  <main class="container">
+    {% for category, message in get_flashed_messages(with_categories=true) %}<div class="notice {{ category }}">{{ message }}</div>{% endfor %}
+    {% if session.get('user_id') %}
+    <nav class="portal-nav" aria-label="Portal sections">
+      {% if session.role == 'admin' %}<a href="{{ url_for('admin_page') }}">Overview</a><a href="{{ url_for('admin_page') }}#student-setup">Student records</a><a href="{{ url_for('admin_page') }}#subject-setup">Subjects</a><a href="{{ url_for('admin_page') }}#accounts">User access</a><a href="{{ url_for('admin_page') }}#issues">Technical issues</a><a href="{{ url_for('admin_page') }}#activity">System activity</a>
+      {% elif session.role == 'faculty' %}<a href="{{ url_for('faculty_page') }}">Overview</a><a href="{{ url_for('faculty_page') }}#mark-entry">Enter marks</a><a href="{{ url_for('faculty_page') }}#mark-history">Submission history</a>
+      {% elif session.role == 'exam_branch' %}<a href="{{ url_for('exam_page') }}">Overview</a><a href="{{ url_for('exam_page') }}#schedule">Exam schedule</a><a href="{{ url_for('exam_page') }}#verification">Verify marks</a><a href="{{ url_for('exam_page') }}#publication">Publish results</a><a href="{{ url_for('exam_page') }}#requests">Correction requests</a>
+      {% elif session.role == 'student' %}<a href="{{ url_for('student_page') }}">My portal</a><a href="{{ url_for('student_page') }}#results">Results</a><a href="{{ url_for('student_page') }}#corrections">Correction requests</a>{% endif %}
+    </nav>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
